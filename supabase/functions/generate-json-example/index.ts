@@ -20,10 +20,15 @@ serve(async (req) => {
     apiKey: apiKey,
   });
 
-  const res = await api.sendMessage(`
-  Generate an example JSON from this type,
-  do not add any other text beside the JSON example\n${payload}`);
-  console.log(res.text);
+  let res;
+  try {
+    res = await api.sendMessage(`
+      Generate an example JSON from this type,
+      do not add any other text beside the JSON example\n${payload}`);
+  } catch (e) {
+    console.error("unable to call gpt api", e);
+    return new Response(JSON.stringify({ message: "unable to call gpt api" }));
+  }
 
   const exampleJson = res.text;
 
