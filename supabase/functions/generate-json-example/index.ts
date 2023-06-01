@@ -30,7 +30,17 @@ serve(async (req) => {
     return new Response(JSON.stringify({ message: "unable to call gpt api" }));
   }
 
-  const exampleJson = res.text;
+  // Find all things enclosed in curly bratches, e.g {}
+  // Hence, we can clean out all unecessary things from GPT
+  const jsonRegex = /\{[^{}]*\}/g;
+  const jsonMatches = res?.text?.match(jsonRegex);
+  if (!jsonMatches) {
+    return new Response(
+      JSON.stringify({ message: "unable to generate json example" })
+    );
+  }
+
+  const exampleJson = jsonMatches[0];
 
   return new Response(JSON.stringify({ example: exampleJson }), {
     headers: { "Content-Type": "application/json" },
