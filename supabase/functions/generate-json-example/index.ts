@@ -4,12 +4,17 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { ChatGPTAPI } from "https://esm.sh/chatgpt@5.2.5";
+import { corsHeaders } from '../_shared/cors.ts'
 
 type Request = {
   payload: string;
 };
 
 serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   const { payload }: Request = await req.json();
   const apiKey = Deno.env.get("CHATGPT_API_KEY");
   if (!apiKey) {
@@ -43,7 +48,7 @@ serve(async (req) => {
   const exampleJson = jsonMatches[0];
 
   return new Response(JSON.stringify({ example: exampleJson }), {
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 });
 
