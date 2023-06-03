@@ -7,19 +7,24 @@ import Image from "next/image";
 const example = [
   {
     name: "typescript",
-    code: `type Row = {\n   name: string\n}`,
+    code: `type Person = {\n  name: string,\n  age: number,\n  city: string,\n  phone: string\n}`,
   },
   {
     name: "javascript",
-    code: `type Row = {\n   name: string\n}`,
+    code: `interface Person {\n  name: string,\n  age: number,\n  city: string,\n  phone: string\n}`,
   },
   {
     name: "python",
-    code: `python code`,
+    code: `class Person:
+    def __init__(self, name: str, age: int, city: str, phone: str) -> None:
+        self.name = name
+        self.age = age
+        self.city = city
+        self.phone = phone`,
   },
   {
     name: "golang",
-    code: `golang code`,
+    code: `type Person struct {\n   name string\n   age int\n   city,phone string\n}`,
   },
 ];
 

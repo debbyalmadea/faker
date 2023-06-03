@@ -22,9 +22,14 @@ const supabase = createClient(
 
 export default function Home() {
   const [payload, setPayload] = useState<string>(
-    `type Row = {\n   name: string\n}`
+    `type Person = {\n  name: string,\n  age: number,\n  city: string,\n  phone: string\n}`
   );
-  const [result, setResult] = useState<string>(`{\n "name": "John Doe"\n}`);
+  const [result, setResult] = useState<string>(`{
+    "name": "John",
+    "age": 28,
+    "city": "New York",
+    "phone": "123-456-7890"
+}`);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
