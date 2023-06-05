@@ -45,12 +45,20 @@ export default function Home() {
       );
 
       if (data) {
-        setResult(data.example);
-        console.log("payload: ", payload, "data: ", data);
+        if (data.status == 200) {
+          setResult(data.example);
+          setErrorMessage("");
+          console.log("payload: ", payload, "data: ", data);
+        } else {
+          setResult("");
+          setErrorMessage(data.message);
+        }
       }
       if (error) {
+        // error from supabase
+        setResult("");
         setErrorMessage(error.message);
-        console.log(error);
+        console.log("error", error.message);
       }
       setLoading(false);
     }
