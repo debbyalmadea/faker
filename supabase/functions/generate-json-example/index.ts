@@ -24,9 +24,10 @@ serve(async (req) => {
     });
 
     // Create a new ratelimiter, that allows 10 requests per 10 seconds
+    const limit = Deno.env.get("EDGE_FUNCTION_RATE_LIMIT")!
     const ratelimit = new Ratelimit({
       redis,
-      limiter: Ratelimit.slidingWindow(50, "1 d"),
+      limiter: Ratelimit.slidingWindow(limit, "1 d"),
       analytics: true,
     });
   
