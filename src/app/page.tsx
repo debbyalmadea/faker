@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
@@ -33,6 +33,21 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const maxLines = 100;
+
+  function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    const lines = e.target.value.split("\n").length;
+    if (lines > maxLines) {
+      const truncatedText = e.target.value
+        .split("\n")
+        .slice(0, maxLines)
+        .join("\n");
+      e.target.value = truncatedText;
+    }
+
+    setPayload(e.target.value);
+    console.log(e.target.value);
+  }
 
   async function generate() {
     if (payload) {
@@ -45,12 +60,20 @@ export default function Home() {
       );
 
       if (data) {
-        setResult(data.example);
-        console.log("payload: ", payload, "data: ", data);
+        if (data.status == 200) {
+          setResult(data.example);
+          setErrorMessage("");
+          console.log("payload: ", payload, "data: ", data);
+        } else {
+          setResult("");
+          setErrorMessage(data.message);
+        }
       }
       if (error) {
+        // error from supabase
+        setResult("");
         setErrorMessage(error.message);
-        console.log(error);
+        console.log("error", error.message);
       }
       setLoading(false);
     }
@@ -90,10 +113,7 @@ export default function Home() {
           value={payload}
           disabled={loading}
           rows={12}
-          onChange={(e) => {
-            setPayload(e.target.value);
-            console.log(e.target.value);
-          }}
+          onChange={handleChange}
           className="focus:outline-none w-full bg-transparent pt-8 text-base"
         />
       </div>
