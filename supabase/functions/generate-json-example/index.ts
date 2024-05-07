@@ -31,7 +31,6 @@ serve(async (req) => {
       limiter: Ratelimit.slidingWindow(limit, "1 d"),
       analytics: true,
     });
-
     const identifier = "api";
     const { success } = await ratelimit.limit(identifier);
 
