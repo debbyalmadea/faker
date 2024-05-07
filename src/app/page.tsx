@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
@@ -21,6 +21,7 @@ const supabase = createClient(
 );
 
 export default function Home() {
+  const countInputRef = useRef<HTMLInputElement>(null);
   const [payload, setPayload] = useState<string>(
     `type Person = {\n  name: string,\n  age: number,\n  city: string,\n  phone: string\n}`
   );
@@ -55,7 +56,7 @@ export default function Home() {
       const { data, error } = await supabase.functions.invoke(
         "generate-json-example",
         {
-          body: { payload: payload },
+          body: { payload: payload, count: countInputRef.current?.value || 1 },
         }
       );
 
@@ -63,7 +64,6 @@ export default function Home() {
         if (data.status == 200) {
           setResult(data.example);
           setErrorMessage("");
-          console.log("payload: ", payload, "data: ", data);
         } else {
           setResult("");
           setErrorMessage(data.message);
@@ -73,7 +73,7 @@ export default function Home() {
         // error from supabase
         setResult("");
         setErrorMessage(error.message);
-        console.log("error", error.message);
+        console.error("error", error.message);
       }
       setLoading(false);
     }
@@ -117,6 +117,12 @@ export default function Home() {
           className="focus:outline-none w-full bg-transparent pt-8 text-base"
         />
       </div>
+      <input
+        ref={countInputRef}
+        type="number"
+        placeholder="Count"
+        className="w-full px-4 py-2 bg-shark-950 text-zinc-100 rounded-md focus:outline-none max-w-xs"
+      />
       <button
         onClick={generate}
         disabled={loading}
